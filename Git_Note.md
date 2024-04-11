@@ -2,21 +2,9 @@
 
 ## 															文章目录
 
-一、Git是一个版本管理系统
-二、Git的基本工作原理
-三、Git的使用
-四、提交步骤
-五、Git进阶
-六、分支命令
-七、暂时保存更改
-八、Github
-九、多人协作开发流程
-十、将本地仓库推送到远程仓库中
-十一、解决冲突
-十二、跨团队协作
-十二、SSh免登陆
-十三、Git忽略清单
-十四、为仓库添加详细的说明
+
+
+
 
 ------
 
@@ -81,6 +69,21 @@ git config --list
 ![image-20240410115149589](./images/image-20240410115149589.png)
 
 ## 四、提交步骤
+
+工作流程图
+
+![git流程](/images/git%E6%B5%81%E7%A8%8B-1712813068331-1.png)
+
+```
+本地仓库：是在开发人员自己电脑上的Git仓库,存放我们的代码(.git 隐藏文件夹就是我们的本地仓库)		
+远程仓库：是在远程服务器上的Git仓库,存放代码(可以是github.com或者gitee.com 上的仓库,或者自己该公司的服务器)
+工作区: 我们自己写代码(文档)的地方
+暂存区: 在本地仓库中的一个特殊的文件(index) 叫做暂存区,临时存储我们即将要提交的文件
+------------
+Clone：克隆，就是将远程仓库复制到本地仓库
+Push：推送，就是将本地仓库代码上传到远程仓库
+Pull：拉取，就是将远程仓库代码下载到本地仓库,并将代码 克隆到本地工作区
+```
 
 1.创建一个本地仓库文件夹，在项目文件夹下打开Git命令行程序
 
@@ -152,6 +155,28 @@ git reflog commitID
 ```
 
 在写回退指令的时候commit id可以不用写全，git自动识别，但是也不能写太少，至少需要写前4位字符；
+
+5、查看远程仓库
+
+查看远程  列出指定的每一个远程服务器的简写
+
+```
+git remote 
+```
+
+查看远程 , 列出 简称和地址
+
+```
+git remote  -v  
+```
+
+查看远程仓库详细地址
+
+```
+git remote show  <仓库简称>
+```
+
+
 
 ## 五、Git进阶
 
@@ -298,7 +323,7 @@ https://github.com/xxxxx/xxx.git
 
 3、生成密钥：
 
-```
+```shell
 ssh-keygen (一直回车)—>C\用户\当前所使用的系统用户
 ```
 
@@ -307,11 +332,11 @@ ssh-keygen (一直回车)—>C\用户\当前所使用的系统用户
 
 5、给ssh 地址添加一个别名：
 
-```
+```shell
 git remote add 仓库地址别名 ssh地址
 ```
 
-## 十三、Git忽略清单
+## shell十三、Git忽略清单
 
 1、将不许要被Git管理的文件名字添加到此文件中，在执行git命令的时候，git就会忽略这些文件。git忽略清单文件名称：.gitignore，将不想被管理的文件夹的名字写在里面。
 
@@ -319,7 +344,7 @@ git remote add 仓库地址别名 ssh地址
 
 部分过滤规则;
 
-```
+```shell
 常见规则写法有如下几种：
 1）/mtk/          过滤整个文件夹
 2）*.zip         过滤所有.zip文件
@@ -340,5 +365,95 @@ git remote add 仓库地址别名 ssh地址
 
 1、Github for Desktop
 
-![img](G:/Git/Git2024/images/wps1.jpg)
+![img](/images/wps1.jpg)
+
+## 十六、Git对远程仓库的操作
+
+#### 1、查看远程仓库
+
+```shell
+# 查看远程  列出指定的每一个远程服务器的简写
+git remote 
+# 查看远程 , 列出 简称和地址
+git remote  -v  
+# 查看远程仓库详细地址
+git remote show  <仓库简称>
+```
+
+#### 2、 添加/移除远测仓库
+
+```shell
+# 添加远程仓库git remote add <shortname> <url># 移除远程仓库和本地仓库的关系(只是从本地移除远程仓库的关联关系，并不会真正影响到远程仓库)git remote rm <shortname> 
+```
+
+#### 3、从远程仓库获取代码
+
+```shell
+# 从远程仓库克隆
+git clone <url> 
+# 从远程仓库拉取 (拉取到.git 目录,不会合并到工作区,工作区发生变化)
+git fetch  <shortname>  <分支名称>
+# 手动合并  把某个版本的某个分支合并到当前工作区
+git merge <shortname>/<分支名称>
+# 从远程仓库拉取 (拉取到.git 目录,合并到工作区,工作区不发生变化) = fetch+merge
+git pull  <shortname>  <分支名称>
+git pull  <shortname>  <分支名称>  --allow-unrelated-histories  #  强制拉取合并
+```
+
+注意：如果当前本地仓库不是从远程仓库克隆，而是本地创建的仓库，并且仓库中存在文件，此时再从远程仓库拉取文件的时候会报错（fatal: refusing to merge unrelated histories ），解决此问题可以在git pull命令后加入参数--allow-unrelated-histories (如上 命令)
+
+```shell
+# 将本地仓库推送至远程仓库的某个分支
+git push [remote-name] [branch-name]
+```
+
+#### 4、命令行-- 分支
+
+```shell
+# 默认 分支名称为 master
+# 列出所有本地分支
+git branch
+# 列出所有远程分支
+git branch -r
+# 列出所有本地分支和远程分支
+git branch -a
+# 创建分支
+git branch <分支名>
+# 切换分支 
+git checkout <分支名>
+# 删除分支(如果分支已经修改过,则不允许删除)
+git branch -d  <分支名>
+# 强制删除分支
+git branch -D  <分支名>
+```
+
+
+
+```shell
+# 提交分支至远程仓库
+git push <仓库简称> <分支名称>	
+# 合并分支 将其他分支合并至当前工作区
+git merge <分支名称>
+# 删除远程仓库分支
+git push origin –d branchName
+```
+
+#### 5、tag
+
+```shell
+# 列出所有tag
+git tag
+# 查看tag详细信息 
+git show [tagName]
+# 新建一个tag
+git tag [tagName]
+# 提交指定tag
+$ git push [仓库简称] [tagName]
+# 新建一个分支，指向某个tag
+$ git checkout -b [branch] [tag]
+# 删除本地tag
+$ git tag -d [tag]
+# 删除远程tag (注意 空格)
+$ git push origin :refs/tags/[tag]
+```
 
